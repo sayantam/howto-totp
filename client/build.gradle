@@ -1,0 +1,22 @@
+plugins {
+    id 'java'
+}
+
+group = 'me.sayantam.howto'
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = '17'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation(project(':shared'))
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
+}
