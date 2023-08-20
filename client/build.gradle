@@ -15,6 +15,14 @@ repositories {
 
 dependencies {
     implementation(project(':shared'))
+    implementation 'org.springframework:spring-core:6.0.11'
+    implementation 'org.springframework:spring-beans:6.0.11'
+    implementation 'org.springframework:spring-context:6.0.11'
+    implementation 'org.springframework:spring-aop:6.0.11'
+    implementation 'org.springframework:spring-expression:6.0.11'
+    implementation 'org.slf4j:slf4j-api:2.0.7'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.7'
 }
 
 tasks.named('test') {
