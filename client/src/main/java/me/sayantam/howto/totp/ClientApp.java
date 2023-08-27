@@ -3,6 +3,8 @@ package me.sayantam.howto.totp;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import me.sayantam.howto.totp.core.CryptoHashStrategy;
 import me.sayantam.howto.totp.core.TotpStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.util.Map;
 
 public class ClientApp {
 
-    private final static Duration DEFAULT_STEP_DURATION = Duration.ofSeconds(60);
+    public final static Duration DEFAULT_STEP_DURATION = Duration.ofSeconds(60);
 
     @Autowired
     private CryptoHashStrategy hashStrategy;
@@ -26,6 +28,8 @@ public class ClientApp {
     private String sharedKey;
 
     private final String totpServerHost;
+
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ClientApp(String totpServerHost) {
         this.totpServerHost = totpServerHost;
@@ -48,7 +52,9 @@ public class ClientApp {
 
     public boolean authenticate() {
         final var sha = hashStrategy.generateCryptoHash(this.sharedKey, DEFAULT_STEP_DURATION);
+        logger.debug("sha: {}", sha);
         final var totp = totpStrategy.generateTotp(sha);
+        logger.info("totp: {}", totp);
         final var client = HttpClient.newHttpClient();
         final var mapper = new ObjectMapper();
         try {

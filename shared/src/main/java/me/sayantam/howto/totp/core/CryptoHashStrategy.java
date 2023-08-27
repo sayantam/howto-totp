@@ -4,9 +4,9 @@ import java.time.Duration;
 
 public abstract class CryptoHashStrategy {
 
-    protected abstract String doGenerateHash(String sharedKey);
+    protected abstract String doGenerateHash(String sharedKey, Duration stepDuration);
 
     public String generateCryptoHash(String sharedKey, Duration stepDuration) {
-        return doGenerateHash(sharedKey);
+        return doGenerateHash(sharedKey, stepDuration);
     }
 }

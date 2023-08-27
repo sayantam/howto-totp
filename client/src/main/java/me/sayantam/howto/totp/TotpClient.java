@@ -4,10 +4,14 @@ import me.sayantam.howto.totp.algo.HmacSha1Hash;
 import me.sayantam.howto.totp.algo.NumericTotp;
 import me.sayantam.howto.totp.core.CryptoHashStrategy;
 import me.sayantam.howto.totp.core.TotpStrategy;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import java.time.Duration;
 
 @Configuration
 public class TotpClient {
@@ -30,14 +34,20 @@ public class TotpClient {
         return new ClientApp(totpServerHost);
     }
 
+    private final static Logger logger = LoggerFactory.getLogger(TotpClient.class);
+
     public static void main(String[] args) throws Exception {
         var ctx = new AnnotationConfigApplicationContext(TotpClient.class);
         var client = ctx.getBean(ClientApp.class);
         client.register();
-        for (var i = 0; i < 1; i++) {
+        for (var i = 0; i < 5; i++) {
             final var ok = client.authenticate();
-            assert ok;
-            if (i > 0) Thread.sleep(3000);
+            if (ok) {
+                logger.info("Client auth ok");
+            } else {
+                logger.error("Client auth failed");
+            }
+            if (i > 0) Thread.sleep(ClientApp.DEFAULT_STEP_DURATION.plus(Duration.ofSeconds(5)).toMillis());
         }
     }
 }
