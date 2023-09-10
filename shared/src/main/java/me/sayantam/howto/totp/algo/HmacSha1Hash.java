@@ -15,21 +15,21 @@ public class HmacSha1Hash extends CryptoHashStrategy {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
-    protected String doGenerateHash(String sharedKey, Duration stepDuration) {
+    protected String doGenerateHash(String sharedKey, Duration changeInterval) {
         final var algo = new HmacUtils(HmacAlgorithms.HMAC_SHA_1, sharedKey);
-        final String value = String.valueOf(getTimeAtStepBoundary(stepDuration));
+        final String value = String.valueOf(getTimeAtStepBoundary(changeInterval));
         return algo.hmacHex(value);
     }
 
-    private long getTimeAtStepBoundary(Duration stepDuration) {
-        final var boundary = stepDuration.getSeconds();
-        logger.debug("boundary: {}", boundary);
+    private long getTimeAtStepBoundary(Duration changeInterval) {
+        final var interval = changeInterval.getSeconds();
+        logger.debug("interval: {}", interval);
         final var ldt = LocalDateTime.now();
         final var ts = ldt.toEpochSecond(ZoneOffset.UTC);
         logger.debug("ts: {}", ts);
-        final var diff = ts % boundary;
-        logger.debug("diff: {}", diff);
-        final var tsb = ts - diff;
+        final var remainder = ts % interval;
+        logger.debug("remainder: {}", remainder);
+        final var tsb = ts - remainder;
         logger.debug("tsb: {}", tsb);
         return tsb;
     }
